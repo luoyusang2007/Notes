@@ -2,15 +2,16 @@
 CentOS 7 ，安装时勾选了 Gnome 桌面环境。
 
 
-
-
 # 退出图形化
 在图形化界面新建终端，执行：
-```
+```shell
 init 3
 ```
 
-
+如果没法进入图形化终端，
+```shell
+killall X
+```
 
 # CentOS 7 Enable SSH
 
@@ -82,6 +83,16 @@ $ sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 ```
 - Reboot the system
 
+
+
+
+# REMOVE
+
+yum distro-sync
+
+yum 
+
+
 # 指定内核路径安装
 例如：
 ```shell
@@ -108,3 +119,26 @@ $ sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 
 
 ```
+
+
+
+
+
+
+
+# 检测安装是否成功
+
+```shell
+nvcc -V
+# 应当输出 Cuda 版本号
+
+nvidia-smi
+# 应当输出显卡信息
+```
+
+# 检测 Torch 是否支持 GPU
+```
+torch.cuda.is_available()
+
+```
+
