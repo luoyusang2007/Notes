@@ -33,6 +33,7 @@ def getposture():
     return dist, phi, theta
     
 DIST, PHI, THETA = getposture()                     # 眼睛与观察目标之间的距离、仰角、方位角
+# Theta 只做中间变量用。GL不会使用这个变量。
 
 def init():
     glClearColor(0.0, 0.0, 0.0, 1.0) # 设置画布背景色。注意：这里必须是4个参数
@@ -123,7 +124,21 @@ def draw():
     glVertex3f(0.0, -0.366, 0.5)         # 设置三角形顶点
     
     glEnd()                              # 结束绘制三角形
+
+
+
+    glBegin(GL_QUAD_STRIP)
+    glColor4f(1.0, 0.0, 0.0, 1.0)      
+    glVertex3f(0.0,0.0,0.0)          
+    glVertex3f(0.2,0.0,0.0)
+    glVertex3f(0.0,0.2,0.0)
+    glVertex3f(0.2,0.2,0.0)
     
+    glEnd()                            
+
+
+
+
     # ---------------------------------------------------------------
     glutSwapBuffers()                    # 切换缓冲区，以显示绘制内容
     
@@ -218,6 +233,9 @@ if __name__ == "__main__":
     glutInitWindowSize(WIN_W, WIN_H)
     glutInitWindowPosition(300, 200)
     glutCreateWindow('Quidam Of OpenGL')
+
+    glPolygonMode(GL_FRONT, GL_FILL)   # 设置正面为填充模式
+    glPolygonMode(GL_BACK, GL_LINE)    # 设置反面为线形模式
     
     init()                              # 初始化画布
     glutDisplayFunc(draw)               # 注册回调函数draw()
