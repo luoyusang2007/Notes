@@ -59,7 +59,6 @@ iVerilog 的执行步骤如下：
 
 
 # iVerilog 项目规模
-iVerilog 这个规模的项目工作量很可能在2000天*人以上。
 贴出行数统计如下：
 
 ## Summary
