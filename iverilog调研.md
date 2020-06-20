@@ -1,79 +1,101 @@
-# iVerilog
-参考自以下：
-- https://iverilog.fandom.com/wiki/Developer_Guide
-- https://github.com/steveicarus/iverilog/blob/master/developer-quick-start.txt
-- https://blog.csdn.net/weixin_38235859/article/details/105478064
-- http://exasic.com/article/index.php?md=e-06
+
+# 南昌大学可以做的
+## 可能的方案：
+ 1. 根据 iVerilog 的拆分，我们可以替换 iVerilog 的 vvp 模块和 tgt-vvp 模块。
+ 2. 读取 pform 格式，处理成张量形式。
+
+
+## 限制：
+1. 项目不包含门级之上层抽象（如RTL）的仿真。
+2. 不保证零延迟仿真结果的正确性。这是因为现实中不存在零延迟电路，而零延迟电路就可能是没有稳定解的，如零延迟的非门连接自己的输入。
+3. 暂不保证含有 CMOS 开关之电路仿真结果正确性。因为此类电路含有H/L态，降低速率，浪费空间，故暂不考虑。
+
+
+# 工作量
+
+1. iVerilog 项目本身是
+2. 由于涉及工具众多，代码研读不会拆过买人每天300行。
+3. 关键部分的研发不会超过没人每天150行。
+4. iVerilog 的 vvp 模块和 tgt-vvp 模块 加起来超过6万行。
+
+
 
 # iverilog 编译安装过程剖析
 - 预编译入口：`autoconf.sh`
 - 引自官方：`You will need autoconf and gperf installed in order for the script to work`
 - gperf 是用于生成散列函数的，此处被称为 `pre-compile` 工作。
 
-``` shell
-- 
+```shell
 echo "Autoconf in root..."
 # 默认加载 configure.in 生成 configure 可执行文件
 autoconf -f  
 
+# 以下代码生成 词法分析代码
 echo "Precompiling lexor_keyword.gperf"
 gperf -o -i 7 -C -k 1-4,6,9,\$ -H keyword_hash -N check_identifier -t ./lexor_keyword.gperf > lexor_keyword.cc 
 
 echo "Precompiling vhdlpp/lexor_keyword.gperf"
 (cd vhdlpp ; gperf -o -i 7 --ignore-case -C -k 1-4,6,9,\$ -H keyword_hash -N check_identifier -t ./lexor_keyword.gperf > lexor_keyword.cc )
 
+# 语法分析的.y文件在 parse.y 中
 ```
-
 
 - 编译安装：`./configure` & `make` as root & `make install` as root.
 - 注意，`./configure` 会生成 `makefile`
 - 默认进入第一条 `make all` 即进入所有在变量 `SUBDIRS` 中列出的子文件夹执行 `make` 
 
 ```shell
-
 SUBDIRS = ivlpp vhdlpp vvp vpi libveriuser cadpli tgt-null tgt-stub tgt-vvp \
           tgt-vhdl tgt-vlog95 tgt-pcb tgt-blif tgt-sizer driver
-
 ```
 
 # 组件
+iVerilog 包含的组件如下：
+| 名称        | 功能                         | 源码位置 |
+| ----------- | ---------------------------- | -------- |
+| ivl         | 编译核心                     |          |
+| ivlpp       | 预处理器，处理编译器指令     |          |
+| driver      | 其它模块的调度器（用户入口） |          |
+| tgt-vvp     | 代码生成器（仿真核心 1/2）   |          |
+| vvp         | 仿真虚拟机（仿真核心 2/2）   |          |
+| vpi         | 处理系统任务                 |          |
+| cadpli      | Cadence PLI 接口支持         |          |
+| tgt-vhdl    | 代码生成器                   |          |
+| tgt-vlog95  | 代码生成器                   |          |
+| libveriuser |                              |          |
+| vhdlpp      |                              |          |
 
-## IVLPP
-- 用途：词法与语法分析
-- 源码位置：
-- 安装后位置：`iverilog/lib/ivl`
+其中，
+- vvp 是用于执行 vvp 文件的 Runtime Component
+- vpi、libveriuser、vhdlpp 都是对 Runtime Component 的支持
+
+# 程序执行步骤
+iVerilog 的执行步骤如下：
+1. 编译：输出 pform 格式
+2. elaboration：层级化，仿真前优化
+3. 输出 vvp 可执行文件（类汇编）
+4. 执行 vvp 文件，获取仿真波形
 
 
-| 名称       | 功能           | 实现 | 代码规模 |
-| ---------- | -------------- | ---- | -------- |
-| driver     |                |      |          |
-| ivlpp      | 词法与语法分析 |      |          |
-| vhdlpp     |                |      |          |
-| vvp        | 仿真虚拟机     |      |          |
-| vpi        |                |      |          |
-| cadpli     |                |      |          |
-| tgt-vvp    | 代码生成器     |      |          |
-| tgt-vhdl   | 代码生成器     |      |          |
-| tgt-vlog95 | 代码生成器     |      |          |
+# 涉及的工具
+- 
 
 
 # 功能
 
 
-# 规模
 
+
+
+# iVerilog 项目规模
 iVerilog 这个规模的项目工作量很可能在2000天*人以上。
-贴出统计如下：
+贴出行数统计如下：
 
 ## Summary
-
 Date : 2020-06-20 18:37:35
-
 Directory e:\iverilog
-
 Total : 595 files,  163947 codes, 37465 comments, 37138 blanks, all 238550 lines
 
-[details](details.md)
 
 ### Languages
 | language     | files |    code | comment |  blank |   total |
@@ -113,22 +135,21 @@ Total : 595 files,  163947 codes, 37465 comments, 37138 blanks, all 238550 lines
 | vpi           |    60 |  27,074 |   4,488 |  5,584 |  37,146 |
 | vvp           |   100 |  33,537 |   7,158 |  8,049 |  48,744 |
 
-[details](details.md)
 
 
-
-
-
-
-# SDF
+# 关于 SDF 支持
 iVerilog 支持 `$sdf_annotate` 命令，但是根据相关BUG报告，在遇到三态门时，这样的支持不可靠。
 
 
 
 
 
-
-
+# 参考
+参考自以下：
+- https://iverilog.fandom.com/wiki/Developer_Guide
+- [官方开发 Quickstart](https://github.com/steveicarus/iverilog/blob/master/developer-quick-start.txt)
+- https://blog.csdn.net/weixin_38235859/article/details/105478064
+- http://exasic.com/article/index.php?md=e-06
 
 
 
