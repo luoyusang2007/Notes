@@ -1,26 +1,6 @@
+以下是近期我们对 iVerilog 的调研
 
-# 南昌大学可以做的
-## 可能的方案：
- 1. 根据 iVerilog 的拆分，我们可以替换 iVerilog 的 vvp 模块和 tgt-vvp 模块。
- 2. 读取 pform 格式，处理成张量形式。
-
-
-## 限制：
-1. 项目不包含门级之上层抽象（如RTL）的仿真。
-2. 不保证零延迟仿真结果的正确性。这是因为现实中不存在零延迟电路，而零延迟电路就可能是没有稳定解的，如零延迟的非门连接自己的输入。
-3. 暂不保证含有 CMOS 开关之电路仿真结果正确性。因为此类电路含有H/L态，降低速率，浪费空间，故暂不考虑。
-
-
-# 工作量
-
-1. iVerilog 项目本身是
-2. 由于涉及工具众多，代码研读不会拆过买人每天300行。
-3. 关键部分的研发不会超过没人每天150行。
-4. iVerilog 的 vvp 模块和 tgt-vvp 模块 加起来超过6万行。
-
-
-
-# iverilog 编译安装过程剖析
+# iVerilog 编译安装过程剖析
 - 预编译入口：`autoconf.sh`
 - 引自官方：`You will need autoconf and gperf installed in order for the script to work`
 - gperf 是用于生成散列函数的，此处被称为 `pre-compile` 工作。
@@ -39,7 +19,6 @@ echo "Precompiling vhdlpp/lexor_keyword.gperf"
 
 # 语法分析的.y文件在 parse.y 中
 ```
-
 - 编译安装：`./configure` & `make` as root & `make install` as root.
 - 注意，`./configure` 会生成 `makefile`
 - 默认进入第一条 `make all` 即进入所有在变量 `SUBDIRS` 中列出的子文件夹执行 `make` 
@@ -48,26 +27,28 @@ echo "Precompiling vhdlpp/lexor_keyword.gperf"
 SUBDIRS = ivlpp vhdlpp vvp vpi libveriuser cadpli tgt-null tgt-stub tgt-vvp \
           tgt-vhdl tgt-vlog95 tgt-pcb tgt-blif tgt-sizer driver
 ```
+上述语句给出了 iVerilog 的默认组件列表。
 
 # 组件
 iVerilog 包含的组件如下：
-| 名称        | 功能                         | 源码位置 |
-| ----------- | ---------------------------- | -------- |
-| ivl         | 编译核心                     |          |
-| ivlpp       | 预处理器，处理编译器指令     |          |
-| driver      | 其它模块的调度器（用户入口） |          |
-| tgt-vvp     | 代码生成器（仿真核心 1/2）   |          |
-| vvp         | 仿真虚拟机（仿真核心 2/2）   |          |
-| vpi         | 处理系统任务                 |          |
-| cadpli      | Cadence PLI 接口支持         |          |
-| tgt-vhdl    | 代码生成器                   |          |
-| tgt-vlog95  | 代码生成器                   |          |
-| libveriuser |                              |          |
-| vhdlpp      |                              |          |
+| 名称        | 功能                                 |
+| ----------- | ------------------------------------ |
+| ivl         | 编译核心（源码根目录）               |
+| ivlpp       | 预处理器，处理编译器指令（反引号）等 |
+| driver      | 其它模块的调度器（用户入口）         |
+| tgt-vvp     | 代码生成器（仿真核心 1/2）           |
+| vvp         | 仿真虚拟机（仿真核心 2/2）           |
+| vpi         | 处理系统任务（ `$` 符号）              |
+| cadpli      | Cadence PLI 接口支持                 |
+| tgt-vhdl    | 代码生成器                           |
+| tgt-vlog95  | 代码生成器                           |
+| libveriuser |                                      |
+| vhdlpp      |                                      |
 
 其中，
 - vvp 是用于执行 vvp 文件的 Runtime Component
-- vpi、libveriuser、vhdlpp 都是对 Runtime Component 的支持
+- vpi、libveriuser、vhdlpp 都是对 PLI 的支持，其中 vpi 即 PLI-2
+- 编译器和编译预处理器使用"flex", "gperf", "bison" 等工具
 
 # 程序执行步骤
 iVerilog 的执行步骤如下：
@@ -75,16 +56,6 @@ iVerilog 的执行步骤如下：
 2. elaboration：层级化，仿真前优化
 3. 输出 vvp 可执行文件（类汇编）
 4. 执行 vvp 文件，获取仿真波形
-
-
-# 涉及的工具
-- 
-
-
-# 功能
-
-
-
 
 
 # iVerilog 项目规模
@@ -138,10 +109,8 @@ Total : 595 files,  163947 codes, 37465 comments, 37138 blanks, all 238550 lines
 
 
 # 关于 SDF 支持
-iVerilog 支持 `$sdf_annotate` 命令，但是根据相关BUG报告，在遇到三态门时，这样的支持不可靠。
 
-
-
+iVerilog 支持 `$sdf_annotate` 命令，源码可以到找 `iverilog/vpi/sdf_parse.y` 语法描述文件。但是根据相关BUG报告，在遇到三态门时，这样的支持不可靠。
 
 
 # 参考
@@ -150,10 +119,4 @@ iVerilog 支持 `$sdf_annotate` 命令，但是根据相关BUG报告，在遇到
 - [官方开发 Quickstart](https://github.com/steveicarus/iverilog/blob/master/developer-quick-start.txt)
 - https://blog.csdn.net/weixin_38235859/article/details/105478064
 - http://exasic.com/article/index.php?md=e-06
-
-
-
-
-
-
 
