@@ -1,6 +1,6 @@
 
 # 基础
-chan 要用make创建，否则会产生空channel（nil-channel）。
+chan 要用 make 创建，否则会产生空channel（nil-channel）。
 
 # 只读、只写
 一般情况下只在定义形参时候说明只读、只写。
