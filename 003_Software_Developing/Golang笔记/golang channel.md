@@ -9,7 +9,7 @@ chan 要用 make 创建，否则会产生空channel（nil-channel）。
 
 https://www.jianshu.com/p/3b24e909905f
 select 不是 switch，但是它也是golang中的一个关键字，可以实现Channel是否可读的检测。https://golang.org/ref/spec#Select_statements
-``` go
+```go
 select { //不停的在这里检测
     case <-chanl : //检测有没有数据可以读
     //如果chanl成功读取到数据，则进行该case处理语句
@@ -22,17 +22,24 @@ select { //不停的在这里检测
 }
 
 ```
-关于break：
+关于 break：
 https://golang.org/ref/spec#Break_statements
 
+判断channel是否close
+```go
+i, ok := <- ch
+if ok {
+    println(i)
+} else {
+    println("channel closed")
+}
+```
+# Channel 转换为 IO
 
 
-# Channel转换为IO
 
 
 
-
-
-# 传参时使用channel
+# 传参时使用 channel
 
 

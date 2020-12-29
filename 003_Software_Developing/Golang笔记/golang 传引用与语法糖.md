@@ -1,6 +1,6 @@
 # 传参是传值还是传引用？
 又叫值传递/引用传递。
-golang 中，字符串和数组默认是传值，但是 slice、map、interface、channel 传引用。
+golang 中，传递都是传值。字符串和数组也是传值，但是 slice、map、channel 本身是引用。go 不能像C一样定义`void changevalue(int &a)`
 
 # 方法中传值和传引用
 如果要改表对象，方法定义必须定义在对象指针上。
