@@ -6,7 +6,7 @@ https://support.huawei.com/enterprise/zh/security/usg2100-pid-8577356 根据配�
 # 华为命令行的三种视图
 - 登录进入用户视图，提示位尖括号
 - 在用户视图输入 `system-view` 进入系统视图
-- 在系统视图输入 `aaa` 进入AAA视图
+- 在系统视图输入 `aaa` 进入 AAA 视图
 
 # 华为命令行帮助
 - 直接打`？`
