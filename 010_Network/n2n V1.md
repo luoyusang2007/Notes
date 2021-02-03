@@ -1,13 +1,16 @@
 # 结构
 - 由 supernode 和 edge 组成，版本必须对应
 - supernode 不参与组网。无需指定社区、密码等
-- 注意，V1 版本必须要密码
+- 注意，V1 版本必须要密码 (-k)
 # 安卓客户端
 - 安卓客户端： hin2n
 - ios 没有客户端
 
 # docker 安装 supernode
-- https://github.com/ntop/n2n 推荐的 supernode docker 是 https://hub.docker.com/r/supermock/supernode/ 
+在具有公网 IP 的云服务器安装
+
+
+https://github.com/ntop/n2n 推荐的 supernode docker 是 https://hub.docker.com/r/supermock/supernode/ 
   - 其版本是 V1
   - 默认端口 7654
 

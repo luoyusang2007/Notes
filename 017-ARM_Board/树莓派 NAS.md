@@ -15,7 +15,7 @@ sudo docker pull arm32v7/nextcloud
 适合 ARM 的镜像：[arm32v7/nextcloud](https://hub.docker.com/r/arm32v7/nextcloud/)
 
 
-参考资料：    [参考1](https://www.jianshu.com/p/a6d355de3dba) [参考2](https://www.jianshu.com/p/f57390c9b68b) [参考3](https://www.jianshu.com/p/717884796efc)
+参考资料：[参考1](https://www.jianshu.com/p/a6d355de3dba) [参考2](https://www.jianshu.com/p/f57390c9b68b) [参考3](https://www.jianshu.com/p/717884796efc)
 
 > 要删除 composer 容器 `sudo docker-compose down`
 > 要列出所有容器（包括停止的） `sudo docker ps -a` 或者 `docker container ls -a`
@@ -66,7 +66,45 @@ sudo docker-compose up -d
 ```
 
 
-# 安装插件
+# 安装插件（应用）
+解决应用商店打不开的问题：
+国内镜像使用方法： http://www.orcy.net.cn/1129.html
+
+## 方法一：科学上网
+...
+
+## 方法二：使用国内镜像
+编辑配置文件 config.php
+```php
+$CONFIG = array (
+  // ...
+  // ADD:
+  'appstoreenabled' => true,
+  'appstoreurl' => 'https://www.orcy.net/ncapps/v1/',
+  // ...
+);
+```
 
 # 共享文件（群组）
-先新建群组
+- 进入网页 UI
+- 先新建群组（用户分组）
+- 点击要共享文件的共享按钮，侧边栏搜索群组名
+
+# 开启外部存储
+https://www.wangzhengzhen.com/3157.html
+
+注意外部存储插件默认是被禁用了的。
+
+
+# 手动添加文件
+https://blog.csdn.net/wyw815514636/article/details/82020095
+
+```bash
+# 扫描所有用户的所有文件
+sudo -u www-data php occ files:scan --all 
+```
+occ有三个用于管理Nextcloud中文件的命令：
+- `files:cleanup` 清除文件缓存 
+- `files:scan` 重新扫描，更新文件 
+- `files:transfer-ownership` 移动所有文件和文件夹
+
