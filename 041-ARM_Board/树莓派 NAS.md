@@ -2,7 +2,7 @@
 
 
 # 无 Docker 的参考
-[仅供参考](https://www.jianshu.com/p/54ab0753b244)
+[简书文章引用，仅供参考](https://www.jianshu.com/p/54ab0753b244)
 
 # 安装 docker 和 docker-compose
 docker 安装后换源
@@ -12,7 +12,7 @@ docker 安装后换源
 ```shell
 sudo docker pull arm32v7/nextcloud
 ```
-适合 ARM 的镜像：[arm32v7/nextcloud](https://hub.docker.com/r/arm32v7/nextcloud/)
+适合 ARM 的镜像：[arm32v7/nextcloud](https://hub.docker.com/r/arm32v7/nextcloud/) 此镜像本身不包含 MySQL/MariaDB 所以要使用 MySQL/MariaDB 作为数据库，需要单独跑一个数据库容器。
 
 
 参考资料：[参考1](https://www.jianshu.com/p/a6d355de3dba) [参考2](https://www.jianshu.com/p/f57390c9b68b) [参考3](https://www.jianshu.com/p/717884796efc)
@@ -24,10 +24,17 @@ sudo docker pull arm32v7/nextcloud
 ## 基本操作
 - 挂载 `sudo mount <partition> <path>`
 - 卸载 `sudo umount <path>`
-- 分区 `sudo fdisk <disk>`
+- 分区 `sudo fdisk <disk>` / `sudo parted <disk>`
 - 格式化 `sudo mkfs -t ext4 <partition>`
 - 查看使用和挂载情况 `df -h`
 - 插入自动挂载（未验证） [参考](https://shumeipai.nxez.com/2015/06/23/raspberry-pi-usb-storage-device-automatically-mounts.html)
+
+# 大分区格式化
+以 ext3 为例：
+```shell
+mkfs.ext3 -T largefile /dev/sdb1
+```
+其中 `-T largefile` 是为了加速格式化。
 
 
 
@@ -35,13 +42,13 @@ sudo docker pull arm32v7/nextcloud
 编辑 `/etc/fstab` 加一行：
 ```shell
 # <partition_dev>  <dir_path>      <format>    defaults        0  0 
-/dev/sda1          /dsf            ext4        defaults        0  0
+/dev/sdXN          /mnt/XXX         ext4        defaults        0  0
 ```
-
+注意此文件编辑错误会导致无法开机。所以编辑完成之后要使用 `sudo mount -a` 测试，而非直接重启。
 
 ## Windows 访问 ext4 分区
-[ext2fsd](https://sourceforge.net/projects/ext2fsd/files/latest/download)
-
+- [读写 ext2 FSD](https://sourceforge.net/projects/ext2fsd/)
+- [只读 ext2 Read](https://sourceforge.net/projects/ext2read/)
 
 # 通过 docker-compose 启动 docker 镜像
 先新建文件夹，然后进入此文件夹    
@@ -52,13 +59,14 @@ services:
   app:
     image: arm32v7/nextcloud
     ports:
-      - "8888:80" # 容器外:容器内
+      - "8888:80"                                 # 容器外:容器内
     volumes:
-      - "./cloud/config:/var/www/html/config" # Configure files
-      - "./cloud/apps:/var/www/html/apps" # App files
+      - "./cloud/config:/var/www/html/config"     # Configure files
+      - "./cloud/apps:/var/www/html/apps"         # App files
       - "/mnt/hdd2t/nextcloud:/var/www/html/data" # User data files
     restart: always
 ```
+注意以上 YAML 不包含数据库。所以在网页配置阶段必须选择 Sqlite 数据库， 默认是 `html/data/owncloud.db` （容器内地址）。
 
 运行（-d 后台运行）：
 ```shell
@@ -68,7 +76,7 @@ sudo docker-compose up -d
 
 # 安装插件（应用）
 解决应用商店打不开的问题：
-国内镜像使用方法： http://www.orcy.net.cn/1129.html
+国内镜像使用方法参考： http://www.orcy.net.cn/1129.html
 
 ## 方法一：科学上网
 ...
@@ -103,7 +111,7 @@ https://blog.csdn.net/wyw815514636/article/details/82020095
 # 扫描所有用户的所有文件
 sudo -u www-data php occ files:scan --all 
 ```
-occ有三个用于管理Nextcloud中文件的命令：
+occ有三个用于管理 Nextcloud 中文件的命令：
 - `files:cleanup` 清除文件缓存 
 - `files:scan` 重新扫描，更新文件 
 - `files:transfer-ownership` 移动所有文件和文件夹

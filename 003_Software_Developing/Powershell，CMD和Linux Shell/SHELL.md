@@ -22,8 +22,6 @@
 - whoami whois
 - mount
 - adduser=useradd
-
-
   ```
   adduser [-c comment] [-d home_dir] [-e expire_date] [-f inactive_time] [-g initial_group] [-G group[,...]] [-m [-k skeleton_dir] | -M] [-p passwd] [-s shell] [-u uid [ -o]] [-n] [-r] loginid
   ```
@@ -34,6 +32,7 @@
 - userdel
 - xargs
 - fdisk
+- parted
 - netstat
 - ifconfig netstat route arp 等属于 `net-tools` 而 `net-tools` 已不再维护
   - CentOS 7 没有 `ifconfig` 命令

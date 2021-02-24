@@ -121,11 +121,13 @@ OpenVPN的TAP-Windows只是二层设备。
 # UDP连接
 UDP本身是无连接的。
 在Go语言中的实现请看
+https://studygolang.com/articles/3345
 
+可见，虽然 golang 试图 像 TCP 那样处理 UDP， 但是**并没有 listen-accept 过程**。
 
 # TCP/UDP端口复用
 TCP和UDP可以占用同一个端口.
-在Golang中，一次ListenUDP+一次DialUDP使用同一个端口不会报错。
+在Golang中，一次 ListenUDP + 一次 DialUDP 使用同一个端口不会报错。
 两次Listen在用一个端口或者两次Dial在同一个端口就会报错：
 `Only one usage of each socket address (protocol/network address/port) is normally permitted`
 
@@ -144,13 +146,13 @@ go语言：https://github.com/gdamore/tcell
 # Golang 代理
 https://github.com/goproxy/goproxy.cn/blob/master/README.zh-CN.md
 
-# Golang Language Server For Vscode
+# Golang Language Server For VSCode
 ## 进入Go扩展设置
 按下`Ctrl+Shift+P`，输入`user settings`进入用户设置
 找到Go扩展的设置
 ## 启动LanguageServer
 找到`Use Language Server`
-勾上后按照提示安装gopls
+勾上后按照提示安装 gopls
 
 
 # Bitvise 使用代理连接
@@ -159,4 +161,3 @@ https://github.com/goproxy/goproxy.cn/blob/master/README.zh-CN.md
 # Bitvise 代理到被连接的主机
 
 
-# 
