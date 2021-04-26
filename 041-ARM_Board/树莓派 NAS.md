@@ -29,6 +29,14 @@ sudo docker pull arm32v7/nextcloud
 - 查看使用和挂载情况 `df -h`
 - 插入自动挂载（未验证） [参考](https://shumeipai.nxez.com/2015/06/23/raspberry-pi-usb-storage-device-automatically-mounts.html)
 
+
+# EXT4 分区格式硬盘灯狂闪
+- 按照 https://blog.csdn.net/stlinax/article/details/108029802 无效
+- 按照 https://cloud.tencent.com/developer/article/1465600 无效
+- 最后选择 ext3 格式，有所改善。
+
+
+
 # 大分区格式化
 以 ext3 为例：
 ```shell
