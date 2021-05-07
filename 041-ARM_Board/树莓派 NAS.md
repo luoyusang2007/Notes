@@ -5,7 +5,7 @@
 [简书文章引用，仅供参考](https://www.jianshu.com/p/54ab0753b244)
 
 # 安装 docker 和 docker-compose
-docker 安装后换源
+docker 安装后换源。参考 https://www.runoob.com/docker/docker-mirror-acceleration.html
 
 
 # 拉取 docker 镜像
@@ -34,6 +34,10 @@ sudo docker pull arm32v7/nextcloud
 - 按照 https://blog.csdn.net/stlinax/article/details/108029802 无效
 - 按照 https://cloud.tencent.com/developer/article/1465600 无效
 - 最后选择 ext3 格式，有所改善。
+- https://segmentfault.com/a/1190000013515410 可能是没有重启的原因。
+- https://www.bbsmax.com/A/gVdnpXNEJW/ ext4 的惰性初始化也是闪烁原因。但是如果日志不关，初始化完成之后还会闪烁
+- 如果不进行惰性初始化，ext4 的格式化时间就会很长。因为格式化期间需要初始化。
+- 对于 ext3 ，关闭文件系统日志之后还是就不会闪烁了。
 
 
 
